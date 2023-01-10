@@ -1,4 +1,5 @@
-import type { LinksFunction, MetaFunction } from "@remix-run/node";
+import type { LinksFunction, LoaderArgs, MetaFunction } from "@remix-run/node";
+import { json } from "@remix-run/node";
 import {
   Links,
   LiveReload,
@@ -9,6 +10,7 @@ import {
 } from "@remix-run/react";
 
 import styles from "./styles/app.css";
+import { getUser } from "./session.server";
 
 export const meta: MetaFunction = () => ({
   charset: "utf-8",
@@ -19,6 +21,12 @@ export const meta: MetaFunction = () => ({
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
+
+export async function loader({ request }: LoaderArgs) {
+  return json({
+    user: await getUser(request),
+  });
+}
 
 export default function App() {
   return (
